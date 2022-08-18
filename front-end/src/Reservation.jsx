@@ -8,26 +8,12 @@ export default function Reservation({ data }) {
 				<p className="card-text">Phone Number: {data.mobile_number}</p>
 				<p className="card-text">Time: {data.reservation_time}</p>
 				<p className="card-text">Party Size: {data.people}</p>
-				<p data-reservation-id-status={data.reservation_id}>
-					Status:{" "}
-					<span
-						className={
-							data.status === "booked"
-								? "card-text text-primary"
-								: "card-text text-success"
-						}
-					>
-						{data.status}
-					</span>
-				</p>
-				{data.status === "booked" ? (
-					<a
-						href={`/reservations/${data.reservation_id}/seat`}
-						className="btn btn-primary"
-					>
-						Seat
-					</a>
-				) : null}
+				<a
+					href={`/reservations/${data.reservation_id}/seat`}
+					className="btn btn-primary"
+				>
+					Seat
+				</a>
 			</div>
 		</div>
 	);
