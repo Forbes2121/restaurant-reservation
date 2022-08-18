@@ -37,7 +37,14 @@
    const added = await service.create(req.body.data);
    res.status(201).json({ data: added });
  }
+ async function read(req, res) {
+   const reservation = await service.read(req.params.id);
+   res.json({
+     data: reservation,
+   });
+ }
  module.exports = {
    list: asyncErrorBoundary(list),
    create: [asyncErrorBoundary(validate), asyncErrorBoundary(create)],
+   read: asyncErrorBoundary(read)
  };
