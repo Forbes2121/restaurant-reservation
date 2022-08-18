@@ -1,3 +1,5 @@
+
+
 import { useHistory } from "react-router";
 import React, { useEffect, useState } from "react";
 import ErrorAlert from "./layout/ErrorAlert";
@@ -53,7 +55,7 @@ export default function ReservationSeatForm() {
 			listTables()
 				.then(setTables)
 				.then(getReservation(reservation_id).then(setReservation)),
-		[reservation_id]
+		[]
 	);
 	return (
 		<div>

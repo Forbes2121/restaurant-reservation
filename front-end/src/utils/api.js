@@ -1,5 +1,3 @@
-
-
 /**
  * Defines the base URL for the API.
  * The default values is overridden by the `API_BASE_URL` environment variable.
@@ -113,6 +111,19 @@
        body: JSON.stringify({ data: { reservation_id } }),
        headers,
        method: "PUT",
+       signal,
+     },
+     []
+   );
+ }
+ export async function finishTable(table_id, signal) {
+   const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+ 
+   return await fetchJson(
+     url,
+     {
+       headers,
+       method: "DELETE",
        signal,
      },
      []
