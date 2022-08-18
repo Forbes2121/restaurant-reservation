@@ -7,7 +7,20 @@ function asDateString(date) {
 function today() {
 	return asDateString(new Date());
 }
-
+function assignValidator(formData, reservation, setError) {
+	setError(null);
+	if (!notNull(formData)) {
+		setError(new Error("Must choose a Table"));
+		return false;
+	}
+	if (reservation.people > formData.capacity) {
+		setError(
+			new Error("Must choose a Table with capacity greater than party size")
+		);
+		return false;
+	}
+	return true;
+}
 function compareKeys(a, b) {
 	const aKeys = Object.keys(a).sort();
 	const bKeys = Object.keys(b).sort();
@@ -16,6 +29,39 @@ function compareKeys(a, b) {
 function notNull(obj) {
 	for (let key in obj) {
 		if (!obj[key]) return false;
+	}
+	return true;
+}
+function tableValidator(formData, setError) {
+	setError(null);
+	const test = {
+		table_name: null,
+		capacity: 0,
+		reservation_id: null,
+	};
+	const test2 = {
+		table_name: null,
+		capacity: 0,
+	};
+	let temp = { ...formData, reservation_id: 1 };
+	let message = "";
+	if (!compareKeys(formData, test) && !compareKeys(formData, test2)) {
+		message =
+			"Invalid data format provided. Requires {string: table_name, number: capacity}";
+		setError(new Error(message));
+		return false;
+	}
+	if (!notNull(temp)) {
+		message =
+			"Invalid data format provided. Requires {string: table_name, number: capacity}";
+		setError(new Error(message));
+		return false;
+	}
+
+	if (formData.table_name.length < 2) {
+		message = "table_name must be at least 2 characters";
+		setError(new Error(message));
+		return false;
 	}
 	return true;
 }
@@ -122,7 +168,7 @@ function isTimeValid(time, date) {
 		const hour = Number(timeArr[0]);
 		const min = Number(timeArr[1]);
 		if (now.getHours() >= hour) {
-			if (now.getHours() === hour) {
+			if (now.getHours() == hour) {
 				if (now.getMinutes() < min) {
 					return true;
 				}
@@ -157,4 +203,6 @@ module.exports = {
 	isTimeOpen,
 	mobileValidate,
 	theValidator,
+	tableValidator,
+	assignValidator,
 };
