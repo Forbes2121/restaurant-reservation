@@ -53,7 +53,7 @@ export default function ReservationSeatForm() {
 			listTables()
 				.then(setTables)
 				.then(getReservation(reservation_id).then(setReservation)),
-		[reservation_id]
+		[]
 	);
 	return (
 		<div>
