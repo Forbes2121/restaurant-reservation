@@ -21,16 +21,18 @@
  }
  async function validate(req, res, next) {
    const added = req.body.data;
+   // console.log(added);
    let message;
    function setError(err) {
      if (err) message = err.message;
    }
-   if (!added)
+   if (!added) {
      return next({
        status: 400,
        message:
          "Invalid data format provided. Requires {string: [first_name, last_name, mobile_number], date: reservation_date, time: reservation_time, number: people}",
      });
+   }
    if (added.status !== `booked`) {
      if (!added.status) req.body.data.status = "booked";
      else {
@@ -44,6 +46,7 @@
      if (!message) {
        message = "people must be a number";
      }
+ 
      return next({ status: 400, message });
    } else {
      return next();
@@ -53,8 +56,10 @@
    const added = await service.create(req.body.data);
    res.status(201).json({ data: added });
  }
- async function read(req, res) {
+ async function read(req, res, next) {
    const reservation = await service.read(req.params.id);
+   if (!reservation)
+     return next({ status: 404, message: `${req.params.id} doesnt exist` });
    res.json({
      data: reservation,
    });
@@ -79,10 +84,41 @@
    }
    next();
  }
+ 
+ async function updateValidateRes(req, res, next) {
+   const { id } = req.params;
+   const test2 = {
+     first_name: null,
+     last_name: null,
+     mobile_number: null,
+     reservation_date: null,
+     reservation_time: null,
+     people: 0,
+     status: "",
+   };
+   let temp = {};
+   for (let key in req.body.data) {
+     if (Object.keys(test2).includes(key)) {
+       temp[key] = req.body.data[key];
+     }
+   }
+   req.body.data = temp;
+   const reservation = await service.read(id);
+   if (!reservation)
+     return next({ status: 404, message: `${id} does not exist` });
+   next();
+ }
  async function update(req, res) {
    const { id } = req.params;
    const { status } = req.body.data;
    const updated = await service.update(id, status);
+   res.status(200).json({ data: updated });
+ }
+ async function updateReservation(req, res) {
+   const { id } = req.params;
+   const reservation = req.body.data;
+ 
+   const updated = await service.updateReservation(id, reservation);
    res.status(200).json({ data: updated });
  }
  module.exports = {
@@ -90,4 +126,9 @@
    create: [asyncErrorBoundary(validate), asyncErrorBoundary(create)],
    read: asyncErrorBoundary(read),
    update: [asyncErrorBoundary(validateUpdate), asyncErrorBoundary(update)],
+   updateReservation: [
+     asyncErrorBoundary(updateValidateRes),
+     asyncErrorBoundary(validate),
+     asyncErrorBoundary(updateReservation),
+   ],
  };
