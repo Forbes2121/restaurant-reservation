@@ -99,7 +99,17 @@
  export async function getReservation(reservation_id, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
  
-   return await fetchJson(url, { headers, signal }, []);
+   return await fetchJson(url, { headers, signal }, [])
+     .then(formatReservationDate)
+     .then(formatReservationTime);
+ }
+ export async function updateReservation(newRes,signal,reservation_id){
+   const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
+   return await fetchJson(
+     url,
+     { body: JSON.stringify({ data: newRes }), headers, method: "PUT", signal },
+     []
+   );
  }
  export async function assignStatus(reservation_id, status, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);

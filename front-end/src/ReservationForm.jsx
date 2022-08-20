@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-import { createReservations } from "./utils/api";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {
+	createReservations,
+	getReservation,
+	updateReservation,
+} from "./utils/api";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import ErrorAlert from "./layout/ErrorAlert";
 
-const { mobileValidate, theValidator } = require("./utils/validateTest");
+import  {mobileValidate, theValidator}   from "./utils/validate";
 export default function ReservationForm() {
 	const history = useHistory();
+	const { params, url, path } = useRouteMatch();
+	const [type, setType] = useState("new");
+	const [existingData, setExistingData] = useState({});
 	const [formData, setFormData] = useState({
 		first_name: "",
 		last_name: "",
@@ -31,22 +38,74 @@ export default function ReservationForm() {
 	const theSubmit = (event) => {
 		event.preventDefault();
 		const abortController = new AbortController();
-
-		if (theValidator(formData, setError)) {
-			createReservations(formData, abortController.signal)
-				.then(() =>
-					history.push(`/dashboard?date=${formData.reservation_date}`)
-				)
-				.catch((err) => {
-					setError(err);
-				});
+		if (type === "new") {
+			if (theValidator(formData, setError)) {
+				createReservations(formData, abortController.signal)
+					.then(() =>
+						history.push(`/dashboard?date=${formData.reservation_date}`)
+					)
+					.catch((err) => {
+						setError(err);
+					});
+			}
+		} else {
+			if (existingData.status === "booked") {
+				if (theValidator(formData, setError)) {
+					updateReservation(
+						formData,
+						abortController.signal,
+						params.reservation_id
+					)
+						.then(() =>
+							history.push(`/dashboard?date=${formData.reservation_date}`)
+						)
+						.catch((err) => {
+							setError(err);
+						});
+				}
+			}
 		}
 	};
+	useEffect(() => {
+		Object.keys(params).length ? setType("edit") : setType("new");
+	}, [history, params, url]);
+	useEffect(() => {
+		if (type === "edit") {
+			const abortController = new AbortController();
+			getReservation(params.reservation_id, abortController.signal)
+				.then(setExistingData)
+				.then(() => {
+					console.log(existingData);
+				})
+				.catch(setError);
+		} else {
+			setExistingData({
+				first_name: "",
+				last_name: "",
+				mobile_number: "",
+				reservation_date: "",
+				reservation_time: "",
+				people: 1,
+			});
+		}
+	}, [type]);
+	useEffect(() => {
+		if (Object.keys(existingData).length) {
+			setFormData({
+				first_name: existingData.first_name,
+				last_name: existingData.last_name,
+				mobile_number: existingData.mobile_number,
+				reservation_date: existingData.reservation_date,
+				reservation_time: existingData.reservation_time,
+				people: existingData.people,
+			});
+		}
+	}, [existingData]);
 
 	return (
 		<div>
 			{error ? <ErrorAlert error={error} /> : null}
-			<h2>New Reservation</h2>
+			{type === "edit" ? <h2>Edit Reservation </h2> : <h2>New Reservation </h2>}
 			<form name="reservation" onSubmit={theSubmit}>
 				<div className="form-group">
 					<label htmlFor="first_name">First Name</label>
@@ -120,7 +179,7 @@ export default function ReservationForm() {
 					/>
 				</div>
 
-				<button type="submit" className="btn btn-primary">
+				<button type="submit" className="btn btn-primary mr-1">
 					Submit
 				</button>
 				<button onClick={() => history.goBack()} className="btn btn-danger">

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ErrorAlert from "./layout/ErrorAlert";
 import { createTables } from "./utils/api";
 
-const { tableValidator } = require("./utils/validateTest");
+import { tableValidator }  from "./utils/validate";
 
 export default function TableForm() {
 	const history = useHistory();
@@ -71,7 +71,7 @@ export default function TableForm() {
 					/>
 				</div>
 
-				<button type="submit" className="btn btn-primary">
+				<button type="submit" className="btn btn-primary mr-1">
 					Submit
 				</button>
 				<button onClick={() => history.goBack()} className="btn btn-danger">

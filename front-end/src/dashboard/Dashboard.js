@@ -56,31 +56,12 @@ function Dashboard({ date }) {
 	return (
 		<main>
 			<h1>Dashboard</h1>
-			<div className="d-md-flex mb-3"></div>
-			<ErrorAlert error={reservationsError} />
-			<div className="d-flex flex-row">
-				<div className="col-6">
-					<h4 className="mb-0">Reservations for date: {date}</h4>
-					{reservations.map((reservation) =>
-						reservation.status === " finished" ? null : (
-							<Reservation data={reservation} />
-						)
-					)}
-				</div>
-				<div className="col-6">
-					<h4>Tables</h4>
-					{tables.map((table) => (
-						<Table data={table} setTables={setTables} />
-					))}
-				</div>
-			</div>
-
-			<div>
+			<div className="ml-3">
 				<button
 					onClick={() => {
 						changeDateUrl(1);
 					}}
-					className="btn btn-primary"
+					className="btn btn-primary mr-1"
 				>
 					Next
 				</button>
@@ -88,7 +69,7 @@ function Dashboard({ date }) {
 					onClick={() => {
 						changeDateUrl(-1);
 					}}
-					className="btn btn-secondary"
+					className="btn btn-secondary mr-1"
 				>
 					Previous
 				</button>
@@ -100,6 +81,29 @@ function Dashboard({ date }) {
 				>
 					Today
 				</button>
+			</div>
+			<div className="d-md-flex mb-3"></div>
+			<ErrorAlert error={reservationsError} />
+			<div className="row">
+				<div className="col-md-6 col-sm-12">
+					<h4 className="mb-0">Reservations for date: {date}</h4>
+					{reservations.map((reservation) =>
+						reservation.status === "finished" ||
+						reservation.status === "cancelled" ? null : (
+							<Reservation
+								data={reservation}
+								setReservations={setReservations}
+								date={date}
+							/>
+						)
+					)}
+				</div>
+				<div className="col-md-6 col-sm-12">
+					<h4>Tables</h4>
+					{tables.map((table) => (
+						<Table data={table} setTables={setTables} />
+					))}
+				</div>
 			</div>
 		</main>
 	);
