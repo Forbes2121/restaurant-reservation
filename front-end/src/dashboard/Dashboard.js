@@ -28,6 +28,7 @@ function Dashboard({ date }) {
 		listReservations({ date }, abortController.signal)
 			.then(setReservations)
 			.catch(setReservationsError);
+      // eslint-disable-next-line
 	}, [tables]);
 	function loadDashboard() {
 		if (theDate !== date) {

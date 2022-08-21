@@ -10,6 +10,7 @@ import ErrorAlert from "./layout/ErrorAlert";
 import  {mobileValidate, theValidator}   from "./utils/validate";
 export default function ReservationForm() {
 	const history = useHistory();
+    // eslint-disable-next-line
 	const { params, url, path } = useRouteMatch();
 	const [type, setType] = useState("new");
 	const [existingData, setExistingData] = useState({});
@@ -88,6 +89,7 @@ export default function ReservationForm() {
 				people: 1,
 			});
 		}
+        // eslint-disable-next-line
 	}, [type]);
 	useEffect(() => {
 		if (Object.keys(existingData).length) {

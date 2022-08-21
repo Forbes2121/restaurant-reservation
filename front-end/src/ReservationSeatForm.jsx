@@ -53,6 +53,7 @@ export default function ReservationSeatForm() {
 			listTables()
 				.then(setTables)
 				.then(getReservation(reservation_id).then(setReservation)),
+                // eslint-disable-next-line
 		[]
 	);
 	return (
