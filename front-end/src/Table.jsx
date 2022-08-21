@@ -23,5 +23,3 @@ export default function Table({ data, setTables }) {
 		</div>
 	);
 }
-//{data.reservation_id ? "red" : "green"}
-//

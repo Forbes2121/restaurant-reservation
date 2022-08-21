@@ -22,4 +22,3 @@ export default function Finish({ tableId, setTables }) {
 		</button>
 	);
 }
-//{data.reservation_id ? "red" : "green"}
