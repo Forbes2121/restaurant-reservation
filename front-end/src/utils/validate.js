@@ -181,7 +181,7 @@ export function isTimeValid(time, date) {
 		const hour = Number(timeArr[0]);
 		const min = Number(timeArr[1]);
 		if (now.getHours() >= hour) {
-			if (now.getHours() == hour) {
+			if (now.getHours() === hour) {
 				if (now.getMinutes() < min) {
 					return true;
 				}
