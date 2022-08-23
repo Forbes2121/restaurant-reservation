@@ -91,7 +91,7 @@
  }
  
  export async function listTables(signal) {
-   const url = `${API_BASE_URL}/tables`;
+   const url = new URL(`${API_BASE_URL}/tables`);
  
    return await fetchJson(url, { headers, signal }, []);
  }
@@ -148,13 +148,15 @@
    // assignStatus(reservation_id, "seated", signal),
  }
  export async function finishTable(table_id, signal) {
-	const url = `${API_BASE_URL}/tables/${table_id}/seat`;
-
-	return await fetch(
-		url,
-		{
-			method: "DELETE",
-			signal,
-		}
-	);
-}
+   const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+ 
+   return await fetchJson(
+     url,
+     {
+       headers,
+       method: "DELETE",
+       signal,
+     },
+     []
+   );
+ }
