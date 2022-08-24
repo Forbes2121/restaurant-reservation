@@ -4,13 +4,25 @@ This is My Thinkful Periodic Tables Capstone Project. This project is a PERN-Sta
 
 # Still To-Do:
 
-1. Find a way to get US-06 frontend to pass. The reservation does in fact disappear from the dashboard when I 'finish' the table, but for some reason that test is still failing. Strange that it works while using the app but I don't understand why it isn't returning null.
+1. Find a way to get US-06 frontend to pass. The reservation does in fact disappear from the dashboard when I 'finish' the table, but for some reason that test is still failing. Strange that it works while using the app but I don't understand why it isn't returning null. Instead it is returning some object with window features.
 
-2. Deploy the backend and the frontend to Heroku or Vercel.
+2. Figure out why .ENV isn't working and I had to hard-code in my database URL.
 
 3. Complete README documentation with descriptions of the app and my api, along with screenshot images.
 
+4. Increase customization and improve app visuals. Add additional features. Clean up the entry input for capacity numbers.
+
 # Installation Instructions
+
+Please note that since I hard-coded in the back-end deployed url in my /front-end/src/utils/api.js you will have to change that back to process.env.REACT_APP_API_BASE_URL || "http://localhost:5001" which is currently commented out. I also had to manually insert my database url's within /back-end/knexfile.js so you should switch that back to:
+
+`const {
+  DATABASE_URL = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_DEVELOPMENT = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_TEST = "postgresql://postgres@localhost/postgres",
+  DATABASE_URL_PREVIEW = "postgresql://postgres@localhost/postgres",
+  DEBUG,
+} = process.env;`
 
 Fork/clone the repo to start. Then navigate to the top level of the project in your terminal and execute:
 
