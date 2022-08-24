@@ -4,7 +4,7 @@
 
  const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
  const service = require("./reservations.service");
- const { theValidator } = require("../../../front-end/src/utils/validateTest");
+ const { theValidator } = require("../errors/validateTest");
  
  async function list(req, res) {
    if (req.query.date) {

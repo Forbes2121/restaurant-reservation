@@ -1,6 +1,6 @@
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const service = require("./tables.service");
-const { tableValidator } = require("../../../front-end/src/utils/validateTest");
+const { tableValidator } = require("../errors/validateTest");
 const router = require("./tables.router");
 const reservationService = require("../reservations/reservations.service");
 async function list(req, res) {

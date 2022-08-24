@@ -73,9 +73,9 @@ export default function ReservationSeatForm() {
 						required
 					>
 						<option value={[null, null]}> Select Table </option>
-						{tables.map((table) => {
+						{tables.map((table, index) => {
 							return (
-								<option
+								<option key={index}
 									value={[table.table_name, table.capacity, table.table_id]}
 								>
 									{table.table_name} - {table.capacity}
