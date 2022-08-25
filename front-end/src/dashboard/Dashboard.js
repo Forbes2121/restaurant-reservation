@@ -1,114 +1,102 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import useQuery from "../utils/useQuery";
-import Reservation from "../Reservation";
-import Table from "../Table";
+import { listReservations, listTables } from "../utils/api";
+import { next, previous, today } from "../utils/date-time";
+import ErrorAlert from "../layout/ErrorAlert";
+import ReservationView from "../layout/reservations/ReservationView";
+import TableView from "../layout/tables/TableView";
+
 /**
  * Defines the dashboard page.
  * @param date
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date }) {
-	const [reservations, setReservations] = useState([]);
-	const [tables, setTables] = useState([]);
-	const [reservationsError, setReservationsError] = useState(null);
-	const query = useQuery();
-	const theDate = query.get("date");
-	const history = useHistory();
+function Dashboard({ date, setDate }) {
+  const [reservations, setReservations] = useState([]);
+  const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
+  const history = useHistory();
+  const query = useQuery();
+  const route = useRouteMatch();
 
-	useEffect(() => {
-		if (!theDate) history.push(`/dashboard?date=${date}`);
-	}, [query, history, theDate, date]);
-	useEffect(loadDashboard, [date, history, theDate]);
-	useEffect(() => {
-		const abortController = new AbortController();
-		listReservations({ date }, abortController.signal)
-			.then(setReservations)
-			.catch(setReservationsError);
-      // eslint-disable-next-line
-	}, [tables]);
-	function loadDashboard() {
-		if (theDate !== date) {
-			history.push(`/dashboard?date=${date}`);
-		}
-		const abortController = new AbortController();
-		const abortController2 = new AbortController();
-		setReservationsError(null);
-		listReservations({ date }, abortController.signal)
-			.then(setReservations)
-			.catch(setReservationsError);
-		listTables(abortController2.signal).then(setTables);
-		return () => abortController.abort();
-	}
-	function changeDateUrl(scalar) {
-		const temp = date.split("-");
-		const newDate = new Date(
-			Number(temp[0]),
-			Number(temp[1]) - 1,
-			Number(temp[2]) + scalar
-		)
-			.toISOString()
-			.split("T")[0];
-		history.push(`/dashboard?date=${newDate}`);
-	}
-	return (
-		<main>
-			<h1>Dashboard</h1>
-			<div className="ml-3">
-				<button
-					onClick={() => {
-						changeDateUrl(1);
-					}}
-					className="btn btn-primary mr-1"
-				>
-					Next
-				</button>
-				<button
-					onClick={() => {
-						changeDateUrl(-1);
-					}}
-					className="btn btn-secondary mr-1"
-				>
-					Previous
-				</button>
-				<button
-					onClick={() => {
-						history.push(`/dashboard`);
-					}}
-					className="btn btn-info"
-				>
-					Today
-				</button>
-			</div>
-			<div className="d-md-flex mb-3"></div>
-			<ErrorAlert error={reservationsError} />
-			<div className="row">
-				<div className="col-md-6 col-sm-12">
-					<h4 className="mb-0">Reservations for date: {date}</h4>
-					{reservations.map((reservation, index) =>
-						reservation.status === "finished" ||
-						reservation.status === "cancelled" ? null : (
-							<Reservation
-                key={index}
-								data={reservation}
-								setReservations={setReservations}
-								date={date}
-							/>
-						)
-					)}
-				</div>
-				<div className="col-md-6 col-sm-12">
-					<h4>Tables</h4>
-					{tables.map((table, index) => (
-						<Table key={index} data={table} setTables={setTables} />
-					))}
-				</div>
-			</div>
-		</main>
-	);
+  useEffect(() => {
+    function updateDate() {
+      const queryDate = query.get("date");
+      if (queryDate) {
+        setDate(queryDate);
+      } else {
+        setDate(today());
+      }
+    }
+    updateDate();
+  }, [query, route, setDate]);
+  useEffect(loadDashboard, [date]);
+
+  function loadDashboard() {
+    const abortController = new AbortController();
+    setReservationsError(null);
+    setTablesError(null);
+    listReservations({ date }, abortController.signal)
+      .then(setReservations)
+      .catch(setReservationsError);
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
+    return () => abortController.abort();
+  }
+
+  const reservationList = reservations.map((reservation) => {
+    if (reservation.status === "cancelled" || reservation.status === "finished")
+      return null;
+    return (
+      <ReservationView
+        key={reservation.reservation_id}
+        reservation={reservation}
+      />
+    );
+  });
+  const tablesList = tables.map((table) => (
+    <TableView key={table.table_id} table={table} />
+  ));
+
+  return (
+    <main className="container fluid mt-3">
+      <h1 className="text-center">Dashboard</h1>
+      <div className="d-flex justify-content-between m-4">
+        <button
+          className="btn btn-info px-3 py-2"
+          onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+        >
+          Previous
+        </button>
+        <button
+          className="btn btn-primary px-3 py-2"
+          onClick={() => history.push(`/dashboard?date=${today()}`)}
+        >
+          Today
+        </button>
+        <button
+          className="btn btn-info px-3 py-2"
+          onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+        >
+          Next
+        </button>
+      </div>
+      <div className="d-md-flex mb-3">
+        <h2 className="mb-0 text-center">Reservations for {date}</h2>
+      </div>
+      <ErrorAlert error={reservationsError} />
+      <ErrorAlert error={tablesError} />
+      <div>
+        <div className="container fluid">{reservationList}</div>
+      </div>
+      <div>
+        <h3 className="mt-4 text-center">Tables</h3>
+        <div className="container fluid">{tablesList}</div>
+      </div>
+    </main>
+  );
 }
 
 export default Dashboard;
