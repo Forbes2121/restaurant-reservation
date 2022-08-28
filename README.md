@@ -12,7 +12,7 @@ This page displays the reservations for a specific date that aren't `completed` 
 
 ### `DashBoard` ScreenShot
 
-![Dashboard](./pictures/Dashboard.png)
+![Dashboard](./Final_Capstone_Screenshots/Dashboard.png)
 
 ## `/search`
 
