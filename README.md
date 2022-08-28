@@ -74,7 +74,7 @@ This route is called by clicking `seat` on an existing reservation that has the 
 
 ### `Finish Before button` Screenshot
 
-![Seat Before](./Final_Capstone_Screenshots/FinishAfter.png)
+![Seat Before](./Final_Capstone_Screenshots/FinishBefore.png)
 
 ### `Finish After button` Screenshot
 
