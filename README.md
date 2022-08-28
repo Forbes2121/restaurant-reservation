@@ -2,21 +2,100 @@
 
 This is My Thinkful Periodic Tables Capstone Project. This project is a PERN-Stack (PostgreSQL, Express, React, and Nodejs) application that represents a reservation management system for a restaurant called Periodic Tables. This application gives users the ability to create/edit reservations, seat a reservation at a table, create tables, and search for a reservation by phone number.
 
-# Still To-Do:
+# [Live Link to Project](https://forbes-frontend-app.herokuapp.com/dashboard)
 
-1. Figure out why .ENV isn't working and I had to hard-code in my database URL.
+# React Application
 
-2. Complete README documentation with descriptions of the app and my api, along with screenshot images.
+## `/dashboard` And `/dashboard?date=YYYY-MM-DD` - Home Page
 
-3. Increase customization and improve app visuals. Add additional features. Clean up the UI overall.
+This page displays the reservations for a specific date that aren't `completed` or `cancelled` as well as displaying all tables. The default date if no date is given is the current date.
+
+### `DashBoard` ScreenShot
+
+![Dashboard](./pictures/Dashboard.png)
+
+## `/search`
+
+This page allows the user to search for a reservation by phone number either partial or full phone number then shows a list of matching reservations.
+
+### `Before` Search screenshot
+
+![Search Before](./pictures/Search_before.png)
+
+### `After` search screenshot
+
+![Search After](./pictures/Search_after.png)
+
+## `/reservations/new`
+
+This route displays a form that allows the user to create a new reservation.
+
+Once a new reservation has been submitted successfully it will redirect to the dashboard/`date of new reservation` displaying the new reservation and all other reservations for that date.
+
+### `Before` Submit Screenshot
+
+![New Reservation Before](./pictures/NewReservation_before.png)
+
+### `After` Submit screenshot
+
+![New Reservation After](./pictures/NewReservation_after.png)
+
+## `/reservations/:reservation_id/edit`
+
+This route is called by clicking `edit` on an existing reservation that has the status `booked` (no other status can be edited). Once edit is clicked it goes to a form identical to the new reservation form but with current values filled in. When successfully submitted the form redirects to the dashboard/`date of reservation`.
+
+### Dashboard `Edit Button` Screenshot
+
+![Edit Reservation Button](./pictures/EditButton.png)
+
+### `Before` Submit Screenshot
+
+![Edit Reservation Before](./pictures/EditReservation_before.png)
+
+### `After` Submit Screenshot
+
+![Edit Reservation After](./pictures/EditReservation_after.png)
+
+## `/reservations/:reservation_id/seat`
+
+This route is called by clicking `seat` on an existing reservation that has the status `booked` (no other status can be seated). Displays a form to assign a reservation a table. After the form is successfully submitted it redirects to dashboard. After a table has been seated the table should show `Occupied` and display a `Finish` button that when clicked finishes the reservation (which hides the reservation) then changes table's status to `free`.
+
+### Dashboard `Seat Button` screenshot
+
+![Seat Button](./pictures/SeatButton.png)
+
+### `Before` Submit Screenshot
+
+![Seat Before](./pictures/SeatFormBefore.png)
+
+### `After` Submit Screenshot
+
+![Seat After](./pictures/SeatFormAfter.png)
+
+### `Finish Before button` Screenshot
+
+![Seat Before](./pictures/FinishAfter.png)
+
+### `Finish After button` Screenshot
+
+![Seat After](./pictures/FinishAfter.png)
+
+## `/tables/new`
+
+This route displays a form to create a new table.
+
+Once a new table has been submitted successfully it will redirect to the dashboard/`current-date` displaying the new table .
+
+### `Before` submit Screenshot
+
+![Table Before](./pictures/NewTableBefore.png)
+
+### `After` submit Screenshot
+
+![Table After](./pictures/NewTableAfter.png)
+
 
 # Installation Instructions
-
-*Please note that I had to hard-code in the database production url in my knexfile.js since I couldn't get past a CORS error without doing that. Feel free to reach out if any difficulties getting the app to work. The knexfile.js should look like the below but it does not work when I do it that way. You may need to change/add .env files as described below.*
-
-`const {
-  DATABASE_URL = "postgresql://postgres@localhost/postgres",
-  ... }`
 
 Fork/clone the repo to start. Then navigate to the top level of the project in your terminal and execute:
 
